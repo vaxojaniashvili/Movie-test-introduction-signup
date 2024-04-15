@@ -1,26 +1,37 @@
-import React from 'react'
-import SignUpInput from './SignUpInput'
+import React from "react";
+import SignUpInput from "./SignUpInput";
 
-const SignUpSumInputs = () => {
+const SignUpSumInputs = ({
+  onChange,
+  value,
+  emailClassName,
+  passwordClassName,
+  rePassClassName,
+}: any) => {
   return (
     <>
-          <SignUpInput
-            className="border-b-2 border-[#5A698F] text-white placeholder:text-[15px] outline-none w-full py-2 px-5 bg-transparent text-[15px] mb-4"
-            type="email"
-            placeholder="Email address"
-          />
-          <SignUpInput
-            className="border-b-2 border-[#5A698F] text-white placeholder:text-[15px] outline-none w-full py-2 px-5 bg-transparent text-[15px] mb-4"
-            type="password"
-            placeholder="Password"
-          />
-          <SignUpInput
-            className="border-b-2 border-[#5A698F] text-white placeholder:text-[15px] outline-none w-full py-2 px-5 bg-transparent text-[15px] mb-4"
-            type="password"
-            placeholder="Repeat password"
-          />
+      <SignUpInput
+        className={emailClassName}
+        type="email"
+        placeholder="Email address"
+        name="email"
+        onChange={onChange}
+        value={value}
+      />
+      <SignUpInput
+        className={passwordClassName}
+        type="password"
+        placeholder="Password"
+        name="password"
+      />
+      <SignUpInput
+        className={rePassClassName}
+        type="password"
+        placeholder="Repeat password"
+        name="password"
+      />
     </>
-  )
-}
+  );
+};
 
-export default SignUpSumInputs
+export default SignUpSumInputs;
