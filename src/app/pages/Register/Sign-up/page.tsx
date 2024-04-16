@@ -4,15 +4,43 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 const SignUp = () => {
-  const [emailValue, setEmailValue] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
+  const [repeatPassErrorMessage, setRepeatPassErrorMessage] = useState("");
 
-  const handleSignUp = (e: { preventDefault: () => void }) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(emailValue);
+
+    if (password !== repeatPassword) {
+      setRepeatPassErrorMessage("Passwords do not match");
+      return;
+    }
+    const formData = {
+      email: email,
+      password: password,
+      repeatPassword: repeatPassword,
+    };
+    setRepeatPassErrorMessage("");
+
+    console.log(formData);
   };
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const handleRepeatPasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRepeatPassword(e.target.value);
+  };
   return (
-    <form onSubmit={handleSignUp}>
+    <form onSubmit={handleFormSubmit}>
       <div className="w-full font-RegisterFont">
         <div className="flex text-white w-full justify-center">
           <div className="py-10 md:py-20">
@@ -22,36 +50,40 @@ const SignUp = () => {
             />
           </div>
         </div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[400px] h-[440px] bg-[#161D2F] px-8 py-8 rounded-[1.25rem]">
+        <div
+          className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[400px] h-[440px] ${
+            repeatPassErrorMessage && "h-[500px]"
+          } bg-[#161D2F] px-8 py-8 rounded-[1.25rem]`}
+        >
           <h1 className="text-[#fff] text-[32px] mb-6">Sign Up</h1>
           <div className="my-4 md:my-[40px]">
             <SignUpInput
-              onChange={(e: {
-                target: { value: React.SetStateAction<string> };
-              }) => setEmailValue(e.target.value)}
+              onChange={handleEmailChange}
+              value={email}
               className="border-b-2 border-[#5A698F] text-white placeholder:text-[15px] outline-none w-full py-2 px-5 bg-transparent text-[15px] mb-4"
               type="email"
               placeholder="Email address"
               name="email"
             />{" "}
             <SignUpInput
-              onChange={(e: {
-                target: { value: React.SetStateAction<string> };
-              }) => setEmailValue(e.target.value)}
+              onChange={handlePasswordChange}
+              value={password}
               className="border-b-2 border-[#5A698F] text-white placeholder:text-[15px] outline-none w-full py-2 px-5 bg-transparent text-[15px] mb-4"
               type="password"
               placeholder="Password"
               name="password"
             />
             <SignUpInput
-              onChange={(e: {
-                target: { value: React.SetStateAction<string> };
-              }) => setEmailValue(e.target.value)}
+              onChange={handleRepeatPasswordChange}
+              value={repeatPassword}
               className="border-b-2 border-[#5A698F] text-white placeholder:text-[15px] outline-none w-full py-2 px-5 bg-transparent text-[15px] mb-4"
               type="password"
               placeholder="Repeat password"
-              name="re-password"
+              name="repeatPassword"
             />
+            {repeatPassErrorMessage && (
+              <p className="text-red-500">{repeatPassErrorMessage}</p>
+            )}
           </div>
           <button
             type="submit"
