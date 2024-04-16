@@ -49,7 +49,7 @@ const SignUp: React.FC = () => {
     validate,
     onSubmit: (values, { resetForm }) => {
       console.log("Form values:", values);
-      const formData = [values.email, values.password, values.repeatPassword];
+      const formData = ["Email",values.email,"Password",values.password];
       localStorage.setItem("formData", JSON.stringify(formData));
       router.push("/pages/Register/Login")
       resetForm();
