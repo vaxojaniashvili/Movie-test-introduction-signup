@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import SignUpInput from "@/app/components/Sign-up-input/SignUpInput";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -7,6 +7,8 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
+  const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  const [passErrorMessage, setPassErrorMessage] = useState("");
   const [repeatPassErrorMessage, setRepeatPassErrorMessage] = useState("");
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -16,14 +18,26 @@ const SignUp = () => {
       setRepeatPassErrorMessage("Passwords do not match");
       return;
     }
+
+    if (password.length < 7) {
+      setPassErrorMessage("Password must be at least 7 characters long");
+      return;
+    }
+
     const formData = {
       email: email,
       password: password,
       repeatPassword: repeatPassword,
     };
+
+    localStorage.setItem("formData", JSON.stringify(formData));
+    setEmail("");
+    setPassword("");
+    setRepeatPassword("");
+    setEmailErrorMessage("");
+    setPassErrorMessage("");
     setRepeatPassErrorMessage("");
 
-    console.log(formData);
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +53,7 @@ const SignUp = () => {
   ) => {
     setRepeatPassword(e.target.value);
   };
+
   return (
     <form onSubmit={handleFormSubmit}>
       <div className="w-full font-RegisterFont">
@@ -51,20 +66,21 @@ const SignUp = () => {
           </div>
         </div>
         <div
-          className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[400px] h-[440px] ${
-            repeatPassErrorMessage && "h-[500px]"
-          } bg-[#161D2F] px-8 py-8 rounded-[1.25rem]`}
+          className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[400px] h-[440px]  bg-[#161D2F] px-8 py-8 rounded-[1.25rem]`}
         >
           <h1 className="text-[#fff] text-[32px] mb-6">Sign Up</h1>
           <div className="my-4 md:my-[40px]">
             <SignUpInput
               onChange={handleEmailChange}
               value={email}
-              className="border-b-2 border-[#5A698F] text-white placeholder:text-[15px] outline-none w-full py-2 px-5 bg-transparent text-[15px] mb-4"
+              className={`border-b-2 border-[#5A698F] text-white placeholder:text-[15px] outline-none w-full py-2 px-5 bg-transparent text-[15px] mb-4`}
               type="email"
               placeholder="Email address"
               name="email"
             />{" "}
+            {emailErrorMessage && (
+              <p className="text-red-500">{emailErrorMessage}</p>
+            )}
             <SignUpInput
               onChange={handlePasswordChange}
               value={password}
@@ -73,6 +89,9 @@ const SignUp = () => {
               placeholder="Password"
               name="password"
             />
+            {passErrorMessage && (
+              <p className="text-red-500">{passErrorMessage}</p>
+            )}
             <SignUpInput
               onChange={handleRepeatPasswordChange}
               value={repeatPassword}
