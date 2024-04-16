@@ -3,8 +3,10 @@ import React from "react";
 import { useFormik } from "formik";
 import SignUpInput from "@/app/components/Sign-up-input/SignUpInput";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const SignUp: React.FC = () => {
+  const router = useRouter()
   const validate = (values: {
     email: string;
     password: string;
@@ -17,7 +19,7 @@ const SignUp: React.FC = () => {
     } = {};
 
     if (!values.email) {
-      errors.email = "Required";
+      errors.email = "Please enter email";
     } else if (
       !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
     ) {
@@ -25,20 +27,19 @@ const SignUp: React.FC = () => {
     }
 
     if (!values.password) {
-      errors.password = "Required";
+      errors.password = "Required password";
     } else if (values.password.length < 7) {
       errors.password = "Password must be at least 7 characters long";
     }
 
     if (!values.repeatPassword) {
-      errors.repeatPassword = "Required";
+      errors.repeatPassword = "Required repeat password";
     } else if (values.repeatPassword !== values.password) {
       errors.repeatPassword = "Passwords do not match";
     }
 
     return errors;
   };
-
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -46,8 +47,12 @@ const SignUp: React.FC = () => {
       repeatPassword: "",
     },
     validate,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: (values, { resetForm }) => {
+      console.log("Form values:", values);
+      const formData = [values.email, values.password, values.repeatPassword];
+      localStorage.setItem("formData", JSON.stringify(formData));
+      router.push("/pages/Register/Login")
+      resetForm();
     },
   });
 
