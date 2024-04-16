@@ -1,61 +1,58 @@
-"use client"
+"use client";
+import React from "react";
+import { useFormik } from "formik";
 import SignUpInput from "@/app/components/Sign-up-input/SignUpInput";
 import Link from "next/link";
-import React, { useState } from "react";
 
-const SignUp = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
-  const [emailErrorMessage, setEmailErrorMessage] = useState("");
-  const [passErrorMessage, setPassErrorMessage] = useState("");
-  const [repeatPassErrorMessage, setRepeatPassErrorMessage] = useState("");
+const SignUp: React.FC = () => {
+  const validate = (values: {
+    email: string;
+    password: string;
+    repeatPassword: string;
+  }) => {
+    const errors: {
+      email?: string;
+      password?: string;
+      repeatPassword?: string;
+    } = {};
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (password !== repeatPassword) {
-      setRepeatPassErrorMessage("Passwords do not match");
-      return;
+    if (!values.email) {
+      errors.email = "Required";
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+    ) {
+      errors.email = "Invalid email address";
     }
 
-    if (password.length < 7) {
-      setPassErrorMessage("Password must be at least 7 characters long");
-      return;
+    if (!values.password) {
+      errors.password = "Required";
+    } else if (values.password.length < 7) {
+      errors.password = "Password must be at least 7 characters long";
     }
 
-    const formData = {
-      email: email,
-      password: password,
-      repeatPassword: repeatPassword,
-    };
+    if (!values.repeatPassword) {
+      errors.repeatPassword = "Required";
+    } else if (values.repeatPassword !== values.password) {
+      errors.repeatPassword = "Passwords do not match";
+    }
 
-    localStorage.setItem("formData", JSON.stringify(formData));
-    setEmail("");
-    setPassword("");
-    setRepeatPassword("");
-    setEmailErrorMessage("");
-    setPassErrorMessage("");
-    setRepeatPassErrorMessage("");
-
+    return errors;
   };
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
-
-  const handleRepeatPasswordChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRepeatPassword(e.target.value);
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      repeatPassword: "",
+    },
+    validate,
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
 
   return (
-    <form onSubmit={handleFormSubmit}>
+    <form onSubmit={formik.handleSubmit}>
       <div className="w-full font-RegisterFont">
         <div className="flex text-white w-full justify-center">
           <div className="py-10 md:py-20">
@@ -66,42 +63,48 @@ const SignUp = () => {
           </div>
         </div>
         <div
-          className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[400px] h-[440px]  bg-[#161D2F] px-8 py-8 rounded-[1.25rem]`}
+          className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[400px] h-[530px] ${
+            formik.errors.email &&
+            formik.errors.password &&
+            formik.errors.repeatPassword &&
+            "h-[600px] xl:h-[540px]"
+          } bg-[#161D2F] px-8 py-8 rounded-[1.25rem]`}
         >
           <h1 className="text-[#fff] text-[32px] mb-6">Sign Up</h1>
           <div className="my-4 md:my-[40px]">
             <SignUpInput
-              onChange={handleEmailChange}
-              value={email}
+              onChange={formik.handleChange}
+              value={formik.values.email}
               className={`border-b-2 border-[#5A698F] text-white placeholder:text-[15px] outline-none w-full py-2 px-5 bg-transparent text-[15px] mb-4`}
               type="email"
               placeholder="Email address"
               name="email"
-            />{" "}
-            {emailErrorMessage && (
-              <p className="text-red-500">{emailErrorMessage}</p>
+            />
+            {formik.errors.email && (
+              <p className="text-red-500">{formik.errors.email}</p>
             )}
+
             <SignUpInput
-              onChange={handlePasswordChange}
-              value={password}
+              onChange={formik.handleChange}
+              value={formik.values.password}
               className="border-b-2 border-[#5A698F] text-white placeholder:text-[15px] outline-none w-full py-2 px-5 bg-transparent text-[15px] mb-4"
               type="password"
               placeholder="Password"
               name="password"
             />
-            {passErrorMessage && (
-              <p className="text-red-500">{passErrorMessage}</p>
+            {formik.errors.password && (
+              <p className="text-red-500">{formik.errors.password}</p>
             )}
             <SignUpInput
-              onChange={handleRepeatPasswordChange}
-              value={repeatPassword}
+              onChange={formik.handleChange}
+              value={formik.values.repeatPassword}
               className="border-b-2 border-[#5A698F] text-white placeholder:text-[15px] outline-none w-full py-2 px-5 bg-transparent text-[15px] mb-4"
               type="password"
               placeholder="Repeat password"
               name="repeatPassword"
             />
-            {repeatPassErrorMessage && (
-              <p className="text-red-500">{repeatPassErrorMessage}</p>
+            {formik.errors.repeatPassword && (
+              <p className="text-red-500">{formik.errors.repeatPassword}</p>
             )}
           </div>
           <button

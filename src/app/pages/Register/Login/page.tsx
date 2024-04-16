@@ -3,6 +3,8 @@ import Link from "next/link";
 import React from "react";
 
 const Login = () => {
+  // const data = localStorage.getItem("formData")
+  // console.log(data);
   return (
     <div className="w-full font-RegisterFont">
       <div className="flex text-white w-full justify-center">
